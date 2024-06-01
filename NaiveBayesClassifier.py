@@ -63,7 +63,9 @@ class NaiveBayesClassifier:
         self.priors = {}
 
 
-    # Formula: P(C∣X)= P(X) P(X∣C)⋅P(C)
+    # Formula: P(C∣X)= P(X∣C) * P(C) / P(X)
+    # The Model traniner
+    # Calculates, mean, variance and prior
     def fit(self, X, y):
 
         print("self.classes", y)
@@ -82,7 +84,6 @@ class NaiveBayesClassifier:
             # calculate the mean 
             self.mean[c] = []
             for feature in zip(*X_c):
-                # print("feature-<<", feature)
                 mean_value = sum(feature) / len(feature)
                 self.mean[c].append(mean_value)
             

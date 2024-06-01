@@ -16,3 +16,7 @@ The Vectorizer use BoW, which is relativly weaken algorithm to the orhers.
    4.1. Transformers
    4.2. Bert
    4.3 Gpt
+
+## Source
+
+[Native Bayes Classifier](https://en.wikipedia.org/wiki/Naive_Bayes_classifier)
