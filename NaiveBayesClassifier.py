@@ -1,6 +1,8 @@
 import math
 import json
 
+# Formula: P(x|S_{i})P(S_{i})>P(x|S_{j})P(S_{j})}, ∀j ≠,𝑖
+
 # comments to train
 comments = [
     "Win money now",
@@ -63,7 +65,6 @@ class NaiveBayesClassifier:
         self.priors = {}
 
 
-    # Formula: P(C∣X)= P(X∣C) * P(C) / P(X)
     # The Model traniner
     # Calculates, mean, variance and prior
     def fit(self, X, y):
