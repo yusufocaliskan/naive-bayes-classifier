@@ -10,8 +10,8 @@ l_x =0.2
 r_x = 0.5
 r_s = 0.2
 
-result = bayes_theorem(l_s,l_x, r_x, r_s)
-print("Result(bayes_theorem):", result)
+l_result,r_result = bayes_theorem(l_s,l_x, r_x, r_s)
+print("Result(bayes_theorem):", l_result,r_result)
 
 
 # classification
@@ -79,13 +79,11 @@ ps = [0.4, 0.6]
 
 # Cloudy, Windy, Chilly 
 # Features
+
 pxs =[  
     [0.8, 0.6, 0.7],  
     [0.2, 0.4, 0.5]
 ] 
-
-
-
 
 bes_class, max_prob = naive_bayes_classify(pxs, ps)
 print("Result(naive_bayes_classify):", bes_class, max_prob)

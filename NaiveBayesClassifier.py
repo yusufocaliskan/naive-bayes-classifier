@@ -1,7 +1,7 @@
 import math
 import json
 
-# Formula: P(x|S_{i})P(S_{i})>P(x|S_{j})P(S_{j})}, ∀j ≠,𝑖
+    # Formula: P(x|S_{i})P(S_{i})>P(x|S_{j})P(S_{j})}, ∀j ≠,𝑖
 
 # comments to train
 comments = [
@@ -64,7 +64,6 @@ class NaiveBayesClassifier:
         self.var = {}
         self.priors = {}
 
-
     # The Model traniner
     # Calculates, mean, variance and prior
     def fit(self, X, y):
@@ -104,13 +103,28 @@ class NaiveBayesClassifier:
     def _predict(self, x):
         posteriors = []
         
-        for c in self.classes:
-            prior = math.log(self.priors[c])
-            class_conditional = sum(math.log(max(self._pdf(x[i], self.mean[c][i], self.var[c][i]), 1e-9)) for i in range(len(x)))
-            posterior = prior + class_conditional
-            posteriors.append(posterior)
+        for class_label in self.classes:
+            # Calculate the prior probability for the class
+            prior_log_prob = math.log(self.priors[class_label])
+            
+            # Calculate the class conditional probability 
+            # logarithm of the probability density function
+            class_conditional_log_prob = 0
+            for feature_index in range(len(x)):
+                feature_value = x[feature_index]
+                mean = self.mean[class_label][feature_index]
+                variance = self.var[class_label][feature_index]
+
+                # Use a small value (1e-9) to prevent log(0) issues
+                pdf_value = max(self._pdf(feature_value, mean, variance), 1e-9)
+                class_conditional_log_prob += math.log(pdf_value)
+            
+            # Calculate the posterior probability for the class
+            posterior_log_prob = prior_log_prob + class_conditional_log_prob
+            posteriors.append(posterior_log_prob)
         
-        return self.classes[posteriors.index(max(posteriors))]
+        best_class_index = posteriors.index(max(posteriors))
+        return self.classes[best_class_index]
     
     def _pdf(self, x, mean, var):
         if var == 0:
@@ -130,12 +144,24 @@ class NaiveBayesClassifier:
             json.dump(model_data, f)
 
     def load_model(self, filepath):
-        with open(filepath, 'r') as f:
-            model_data = json.load(f)
-        self.mean = {int(k): v for k, v in model_data["mean"].items()}
-        self.var = {int(k): v for k, v in model_data["var"].items()}
-        self.priors = {int(k): float(v) for k, v in model_data["priors"].items()}
-        self.classes = [int(c) for c in model_data["classes"]]
+        with open(filepath, 'r') as file:
+            model_data = json.load(file)
+        
+        self.mean = {}
+        for class_label, mean_values in model_data["mean"].items():
+            self.mean[int(class_label)] = mean_values
+        
+        self.var = {}
+        for class_label, var_values in model_data["var"].items():
+            self.var[int(class_label)] = var_values
+        
+        self.priors = {}
+        for class_label, prior_value in model_data["priors"].items():
+            self.priors[int(class_label)] = float(prior_value)
+        
+        self.classes = []
+        for class_label in model_data["classes"]:
+            self.classes.append(int(class_label))
 
 model = NaiveBayesClassifier()
 
